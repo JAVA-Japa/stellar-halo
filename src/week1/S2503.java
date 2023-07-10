@@ -1,19 +1,20 @@
 package week1;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class S2503 {
-    public static void main(String[] args) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        HashSet<Integer> answer = new HashSet<>();
+    private static List<Integer> answer;
+    private static int N;
+    private static int NUMBER;
+    private static int S;
+    private static int B;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        N = scanner.nextInt();
+        answer = new CopyOnWriteArrayList<>();
         for (int hundred = 1; hundred < 10; hundred++) {
             for (int ten = 1; ten < 10; ten++) {
                 if (hundred != ten) {
@@ -21,33 +22,43 @@ public class S2503 {
                         if (ten != one && hundred != one) answer.add(hundred * 100 + ten * 10 + one);
                     }
                 }
-
             }
         }
-        for (int temp = 0; temp < n; temp++) {
-
+        for (int temp = 0; temp < N; temp++) {
+            NUMBER = scanner.nextInt();
+            S = scanner.nextInt();
+            B = scanner.nextInt();
+            findAnswer();
         }
-        for (int i : answer) {
-//            findAnswer(answer, )
-        }
-
-        bw.flush();
-        br.close();
-        bw.close();
+        System.out.println(answer.size());
     }
 
-    public boolean findAnswer(ArrayList<String> a, ArrayList<String> q, int s, int b) {
-        int tempS = 0;
-        int tempB = 0;
-        for (String number : a) {
-            if (q.contains(number)) tempB++;
-        }
-        for (int temp = 0; temp < 3; temp++) {
-            if (a.get(temp).equals(q.get(temp))) {
-                tempS++;
-                tempB--;
+    private static void findAnswer() {
+        int hundred = NUMBER / 100;
+        int ten = NUMBER / 10 % 10;
+        int one = NUMBER % 10;
+        for (int i : answer) {
+            int strike = 0;
+            int ball = 0;
+            int h = i / 100;
+            int t = i / 10 % 10;
+            int o = i % 10;
+            if (hundred == h) strike++;
+            else {
+                if (hundred == t) ball++;
+                else if (hundred == o) ball++;
             }
+            if (ten == t) strike++;
+            else {
+                if (ten == h) ball++;
+                else if (ten == o) ball++;
+            }
+            if (one == o) strike++;
+            else {
+                if (one == h) ball++;
+                else if (one == t) ball++;
+            }
+            if (S != strike || B != ball) answer.remove((Integer) i);
         }
-        return tempS == s && tempB == b;
     }
 }
